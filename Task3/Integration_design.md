@@ -1,4 +1,5 @@
-# Task 03 — Integration Design (OrthoNow Landing Page → HubSpot → WhatsApp → Google Ads)
+# Task 03 — Integration Design 
+## OrthoNow Landing Page → HubSpot → WhatsApp → Google Ads
 
 ---
 
@@ -12,7 +13,7 @@ The form fires two things simultaneously on validated submit: the client-side GT
 **Step 2 — HubSpot Contact Create/Update (Direct API, not native embed or Zapier)**
 The backend function calls HubSpot's **Contacts Search API** first (`POST /crm/v3/objects/contacts/search`), filtering on the `phone` property to check if a contact with that number already exists. Based on the result it either creates a new contact (`POST /crm/v3/objects/contacts`) or updates the existing one (`PATCH /crm/v3/objects/contacts/{id}`), setting Name, Phone, Clinic Preference, Source = `Google Ads - Consultation Landing Page`, and Lead Status = `New Enquiry`.
 
-I chose a **direct API call over native HubSpot embed, Zapier, or Make** for one reason: control. Native embeds force email as the identifier, which doesn't apply here. Zapier and Make introduce polling latency of 1–15 minutes on standard plans — that alone would blow the 2-minute WhatsApp SLA before anything else goes wrong. A direct API call is synchronous, fast, and puts the dedup logic fully in our hands.
+I chose a **direct API call** over native HubSpot embed, Zapier, or Make for one reason: control. Native embeds force email as the identifier, which doesn't apply here. Zapier and Make introduce polling latency of 1–15 minutes on standard plans — that alone would blow the 2-minute WhatsApp SLA before anything else goes wrong. A direct API call is synchronous, fast, and puts the dedup logic fully in our hands.
 
 **Step 3 — WhatsApp Message via Karix (fired in parallel with Step 2)**
 The backend function calls Karix's send-message API immediately after the form data is received — in parallel with the HubSpot write, not after it. Waiting for HubSpot to confirm before triggering WhatsApp would add unnecessary latency. The message uses a pre-approved WhatsApp Business template populated with the patient's name and clinic preference.
