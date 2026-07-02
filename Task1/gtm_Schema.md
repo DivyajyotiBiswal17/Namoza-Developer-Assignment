@@ -73,20 +73,6 @@ A second Custom Event trigger for `booking_confirmed` covers step 3 confirmation
 
 **Note:** Raw phone number and name are intentionally excluded — only a boolean `has_phone` is pushed. No PII enters the dataLayer, keeping GA4 data collection PDPA/DPDP compliant.
 
-**Dev brief for step 2 (verbatim brief to give the front-end team):**
-> "In your step 2 transition handler — the function that runs when the user clicks Next and all fields pass validation — add this before you call the API or advance the UI:
-> ```js
-> window.dataLayer = window.dataLayer || [];
-> window.dataLayer.push({
->   event: 'booking_step_complete',
->   step_number: 2,
->   step_name: 'contact_details_entered',
->   clinic_location: formState.clinicLocation,
->   has_phone: !!formState.phone
-> });
-> ```
-> Fire it once per step only — guard against re-fires if the user navigates back and forward within the form. Do not include the raw phone number or name."
-
 ---
 
 ### dataLayer JSON — Step 3 (Booking Confirmed)
